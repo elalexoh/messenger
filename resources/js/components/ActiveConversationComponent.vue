@@ -1,24 +1,21 @@
 <template>
     <b-row>
         <b-col cols="8">
-          <b-card footer-bg-variant="light"
-            footer-border-variant="dark"
-            title="Conversacion Activa" class="h-100">
-                <b-media  vertical-align="center" class="mb-2" >
-                  <b-img rounded="circle" slot="aside" blank blank-color="#ccc" width="48" alt="placeholder" />
-                    <b-card>
-                        Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante
-                  sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra
-                    </b-card>
-                </b-media>
-                <b-media right-align vertical-align="center" class="mb-2">
-                  <b-img rounded="circle" slot="aside" blank blank-color="#ccc" width="48" alt="placeholder" />
-                    <b-card>
-                        Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante
-                    </b-card>
-                </b-media>
+          <b-card 
+                footer-bg-variant="light"
+                footer-border-variant="dark"
+                title="Conversacion Activa" 
+                class="h-100">
+    
+                <message-conversation-component 
+                    v-for="message in messages"
+                    :key="message.id"
+                    :written-by-me="message.written_by_me">
+                    {{ message.content }}
+                </message-conversation-component>
+
                 <div slot="footer">
-                    <b-form class="mb-0">
+                    <b-form class="mb-0" @submit.prevent="postMessage()">
                         <b-input-group>
                             <b-form-input class="text-center"
                               type="text"
@@ -49,10 +46,31 @@
         ],
         data(){
             return {
+                messages: [
+                ]
             };
         },
         mounted() {
-            console.log('Component mounted.')
+            this.getMessages();
+        },
+        methods: {
+            getMessages() {
+                axios.get('/api/messages')
+                    .then((response) => {
+                        console.log(response.data);
+                        this.messages = response.data;
+                    }); 
+            },
+            postMessage() {
+                const params = {
+                    to_id: 2,
+                    content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Autem inventore ducimus accusantium consectetur praesentium, vitae incidunt alias, dolores pariatur iste cupiditate earum hic doloremque officiis? Modi esse ratione, alias consequuntur.'
+                };
+                axios.post('/api/messages', params)
+                    .then((response) => {
+                        console.log(response.data);
+                    });
+            }
         }
     };
 </script>

@@ -27,8 +27,8 @@ class MessageController extends Controller
     	$saved = $message->save();
 
     	$data = [];
-    	// $data = ['success'] = $saved;
-    	return $saved;
+    	$data['success'] = $saved;
+    	return $data;
 
     }
 }

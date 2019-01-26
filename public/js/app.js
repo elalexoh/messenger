@@ -1805,11 +1805,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: [],
   data: function data() {
     return {
-      messages: []
+      messages: [],
+      newMessage: ''
     };
   },
   mounted: function mounted() {
@@ -1820,17 +1823,20 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       axios.get('/api/messages').then(function (response) {
-        console.log(response.data);
         _this.messages = response.data;
       });
     },
     postMessage: function postMessage() {
+      var _this2 = this;
+
       var params = {
         to_id: 2,
-        content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Autem inventore ducimus accusantium consectetur praesentium, vitae incidunt alias, dolores pariatur iste cupiditate earum hic doloremque officiis? Modi esse ratione, alias consequuntur.'
+        content: this.newMessage
       };
       axios.post('/api/messages', params).then(function (response) {
-        console.log(response.data);
+        _this2.newMessage = '';
+
+        _this2.getMessages();
       });
     }
   }
@@ -23374,6 +23380,7 @@ var render = function() {
                     "b-form",
                     {
                       staticClass: "mb-0",
+                      attrs: { autocomplete: "off" },
                       on: {
                         submit: function($event) {
                           $event.preventDefault()
@@ -23390,6 +23397,13 @@ var render = function() {
                             attrs: {
                               type: "text",
                               placeholder: "Escribe un mensaje..."
+                            },
+                            model: {
+                              value: _vm.newMessage,
+                              callback: function($$v) {
+                                _vm.newMessage = $$v
+                              },
+                              expression: "newMessage"
                             }
                           }),
                           _vm._v(" "),
@@ -23398,7 +23412,9 @@ var render = function() {
                             [
                               _c(
                                 "b-button",
-                                { attrs: { variant: "primary" } },
+                                {
+                                  attrs: { type: "submit", variant: "primary" }
+                                },
                                 [_vm._v("Enviar")]
                               )
                             ],

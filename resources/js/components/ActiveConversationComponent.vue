@@ -15,14 +15,16 @@
                 </message-conversation-component>
 
                 <div slot="footer">
-                    <b-form class="mb-0" @submit.prevent="postMessage()">
+                    <b-form class="mb-0" @submit.prevent="postMessage()"
+                        autocomplete="off">
                         <b-input-group>
                             <b-form-input class="text-center"
                               type="text"
+                              v-model="newMessage"
                               placeholder="Escribe un mensaje...">
                             </b-form-input>
                             <b-input-group-append>
-                              <b-button variant="primary">Enviar</b-button>
+                              <b-button type="submit" variant="primary">Enviar</b-button>
                             </b-input-group-append>
                         </b-input-group>
                     </b-form>
@@ -46,8 +48,8 @@
         ],
         data(){
             return {
-                messages: [
-                ]
+                messages: [],
+                newMessage: ''
             };
         },
         mounted() {
@@ -57,18 +59,18 @@
             getMessages() {
                 axios.get('/api/messages')
                     .then((response) => {
-                        console.log(response.data);
                         this.messages = response.data;
                     }); 
             },
             postMessage() {
                 const params = {
                     to_id: 2,
-                    content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Autem inventore ducimus accusantium consectetur praesentium, vitae incidunt alias, dolores pariatur iste cupiditate earum hic doloremque officiis? Modi esse ratione, alias consequuntur.'
+                    content: this.newMessage
                 };
                 axios.post('/api/messages', params)
                     .then((response) => {
-                        console.log(response.data);
+                        this.newMessage = '';
+                        this.getMessages();
                     });
             }
         }
